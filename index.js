@@ -1,12 +1,12 @@
 /**
- * @name CrawlerReclameAqui
+ * @name ScrapingReclameAqui
  * @file index.js
- * @description A intenção desse crawler é pegar todos os resultados de uma determinada
+ * @description A intenção desse Scraping é pegar todos os resultados de uma determinada
  * página do Reclame Aqui com seus determinados títulos, conteúdos e metadados. Esse
- * crawler gerará um JSON como o mesmo localizado no arquivo `example.json`
+ * Scraping gerará um JSON como o mesmo localizado no arquivo `example.json`
  * @summary O site do Reclame Aqui, nesta data, foi criado com Angular. Precisamos ter
- * atenção com as classes que nosso Crawler/Scrapper irá pegar, pois elas podem ser variáveis
- * em relação a página que iremos começar a fazer o crawler.
+ * atenção com as classes que nosso Scraper irá pegar, pois elas podem ser variáveis
+ * em relação a página que iremos começar a fazer o Scraping.
  * @author Victor Nery <victornery.t@gmail.com>
  * 
  * A página base que utilizamos para esse exemplo: 
@@ -59,7 +59,7 @@ isDebuggerActived && log('Iniciando aplicação... ');
   
   try {
     await page.goto(CRAWLER_DATA.link);
-    browser.close();
+    // browser.close();
   } catch (err) {
     console.error(`Algum problema aconteceu! 😥`, err);
     browser.close();
