@@ -1,0 +1,15 @@
+{
+  "name": "crawler-reclame-aqui",
+  "version": "1.0.0",
+  "description": "Crawler para o Reclame Aqui buscar e trazer os resultados de uma página específica.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Victor Nery",
+  "license": "ISC",
+  "dependencies": {
+    "puppeteer": "^3.0.2"
+  }
+}
