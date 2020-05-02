@@ -46,7 +46,65 @@ const OPTIONS = {
   },
 };
 
+/**
+ * Desestruturação realizada para facilitar chamada do
+ * `OPTIONS.application.isDebuggerActived` para `isDebuggerActived`
+ */
+
 const { application: isDebuggerActived } = OPTIONS
+
+/**
+ * @var SCRAPED_DATA
+ * @description
+ */
+
+ const SCRAPED_DATA = []
+
+/**
+ * @function checkFileExists
+ * @description Óbvio? Hahaha. Checa se um arquivo existe.
+ * @param {*} pathname 
+ * @example './filename.json'
+ */
+
+const checkFileExists = (pathname) => fs.existsSync(pathname) && true
+
+const createFile = (filename, content = SCRAPED_DATA) => {
+  fs.writeFile(`${filename}.json`, ...content, (err) => {
+    if(err) throw err;
+    console.log('Arquivo criado com sucesso! :-P')
+  })
+}
+
+const promiseNewPage = new Promise(item => browser.once('targetcreated', target => item(target.page())));
+
+const getDataOfPage = async (page, { order }) => {
+  // Esperamos nosso seletor carregar :-) 
+  await page.waitForSelector('.complain-list li.ng-scope');
+
+  // Criamos nosso link que será clicado pelo puppeteer
+  const link = page.$(`.complain-list li.ng-scope:nth-child(${order}) a`);
+
+  // Clicamos no link criado :-P
+  await link.click();
+
+  // Alteramos o target atual
+  const newPage = promiseNewPage;
+
+  // Passamos essa mesma página para frente
+  newPage.bringToFront();
+  await newPage.evaluate(() => {
+    const title = document.querySelector('h1.ng-binding');
+    const content = document.querySelector('.complain-body p');
+
+    const MOUNTED_DATA = {
+      title,
+      content
+    }
+
+    SCRAPED_DATA.push(MOUNTED_DATA);
+  })
+}
 
 isDebuggerActived && log('Iniciando aplicação... ');
 
@@ -58,14 +116,19 @@ isDebuggerActived && log('Iniciando aplicação... ');
   isDebuggerActived && log('Abrindo nova página');
   
   try {
+    // Primeiro, vamos começar iniciando a página que gostaríamos
     await page.goto(CRAWLER_DATA.link);
-    // browser.close();
+    
+    await getDataOfPage(page, 1);
+
+    // Criará um novo arquivo?
+    await SCRAPED_DATA && createFile(`${CRAWLER_DATA.title}.json`)
+
+    await browser.close();
+
   } catch (err) {
     console.error(`Algum problema aconteceu! 😥`, err);
     browser.close();
   }
 
-})();
-
-// const title = document.querySelector('h1.ng-binding');
-// const content = document.querySelector('.complain-body p');
+})(); 
